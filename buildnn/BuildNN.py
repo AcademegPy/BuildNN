@@ -10,17 +10,23 @@ class BuildNN:
         self.model = model
         self.embeddings = None
 
-    def encode(self, text):
+    def encode(self, from_list: List[str]):
         if isinstance(self.model, str):
             model = SentenceTransformer(self.model)
             self.embeddings = {}
-            self.embeddings[self.model] = numpy.array(model.encode(text), dtype='double')
+            embeddings = []
+            for name in from_list:
+                embeddings.append(numpy.array(model.encode(name), dtype='double'))
+            self.embeddings[self.model] = embeddings
         
         elif isinstance(self.model, Iterable):
             self.embeddings = {}
             for model in self.model:
                 sent_trans = SentenceTransformer(model)
-                self.embeddings[model] = numpy.array(sent_trans.encode(text), dtype='double')
+                embeddings = []
+                for name in from_list:
+                    embeddings.append(numpy.array(sent_trans.encode(name), dtype='double'))
+                    self.embeddings[model] = embeddings
 
         return self
 
