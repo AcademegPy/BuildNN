@@ -8,7 +8,7 @@ from BuildNN import BuildNN
 def main():
     obj = BuildNN(['distiluse-base-multilingual-cased', 'distilbert-base-uncased'])
     obj.encode("Hello, World!")
-    embeddings = obj.get_embeddings('distilbert-base-uncased')
+    embeddings = obj.get_embeddings()
     print(embeddings)
     obj.save_embeddings_xml()
 

@@ -11,14 +11,22 @@ class BuildNN:
         self.model = model
         self.embeddings = None
 
-    def encode(self, from_list: Union[str, List]):
-        """Генерация эмбеддингов"""
+    def encode(self, text: Union[str, List]):
+        """ Генерация эмбеддингов
+        
+            from_list:  str - строка
+                        list - список строк
+        """
+        
         if isinstance(self.model, str):
             model = SentenceTransformer(self.model)
             self.embeddings = {}
             embeddings = []
-            for name in from_list:
-                embeddings.append(numpy.array(model.encode(name), dtype='double'))
+            if isinstance(text, str):
+                embeddings.append(numpy.array(model.encode(text), dtype='double'))
+            elif isinstance(text, list):
+                for token in text:
+                  embeddings.append(numpy.array(model.encode(token), dtype='double'))
             self.embeddings[self.model] = embeddings
         
         elif isinstance(self.model, Iterable):
@@ -26,14 +34,20 @@ class BuildNN:
             for model in self.model:
                 sent_trans = SentenceTransformer(model)
                 embeddings = []
-                for name in from_list:
-                    embeddings.append(numpy.array(sent_trans.encode(name), dtype='double'))
-                    self.embeddings[model] = embeddings
+                if isinstance(text, str):
+                    embeddings.append(numpy.array(sent_trans.encode(text), dtype='double'))
+                elif isinstance(text, list):
+                    for token in text:
+                      embeddings.append(numpy.array(sent_trans.encode(token), dtype='double'))
+                self.embeddings[model] = embeddings
 
         return self
 
     def get_embeddings(self, model: str = None) -> Union[dict, numpy.ndarray]:
-        """Получение эмбеддингов"""
+        """ Получение эмбеддингов
+        
+            model: str - название модели
+        """
         if model:
             return self.embeddings[model]
 
@@ -46,7 +60,12 @@ class BuildNN:
         return self.embeddings
     
     def save_embeddings_xml(self, model: str = None, filename: str = 'embeddings.xml'):
-        """Сохранение эмбеддингов в формате XML"""
+        """ Сохранение эмбеддингов в формате XML
+        
+            model: str - название модели
+            filename: str - имя файла
+        """
+
         data = xml.Element("data")
 
         if model:
