@@ -11,6 +11,7 @@ class BuildNN:
         self.model = model
         self.embeddings = None
 
+
     def encode(self, text: Union[str, List]):
         """ Генерация эмбеддингов
         
@@ -28,7 +29,7 @@ class BuildNN:
                 for token in text:
                   embeddings.append(numpy.array(model.encode(token), dtype='double'))
             self.embeddings[self.model] = embeddings
-        
+
         elif isinstance(self.model, Iterable):
             self.embeddings = {}
             for model in self.model:
@@ -42,6 +43,7 @@ class BuildNN:
                 self.embeddings[model] = embeddings
 
         return self
+
 
     def get_embeddings(self, model: str = None) -> Union[dict, numpy.ndarray]:
         """ Получение эмбеддингов
@@ -57,6 +59,7 @@ class BuildNN:
 
         return self.embeddings
     
+
     def save_embeddings_xml(self, model: str = None, filename: str = 'embeddings.xml'):
         """ Сохранение эмбеддингов в формате XML
         
