@@ -1,3 +1,3 @@
 # BuildNN
 
-Пример использования в main.py
+Пример использования в BuildNN/buildnn/main.py
