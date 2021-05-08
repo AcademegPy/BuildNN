@@ -5,14 +5,12 @@ import numpy
 from BuildNN import BuildNN
 
 
-
-
-
 def main():
     obj = BuildNN(['distiluse-base-multilingual-cased', 'distilbert-base-uncased'])
-    obj.encode("Всем хай.")
-    print(obj.get_embeddings())
-
+    obj.encode("Hello, World!")
+    embeddings = obj.get_embeddings('distilbert-base-uncased')
+    print(embeddings)
+    obj.save_embeddings_xml()
 
 
 if __name__ == '__main__':
