@@ -48,8 +48,6 @@ class BuildNN:
         
             model: str - название модели
         """
-        if model:
-            return self.embeddings[model]
 
         if len(self.embeddings) == 1:
             return self.embeddings[self.model]
