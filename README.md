@@ -4,8 +4,8 @@
 Пример xml-разметки для метода encode_from_xml:
 ```xml
 <data>
-	<text>
-		Текст документа
-	</text>
+    <text>
+        Текст документа
+    </text>
 </data>
 ```
