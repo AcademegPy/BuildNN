@@ -1,4 +1,4 @@
-import logging
+import os
 import numpy
 import pandas as pd
 import xml.etree.ElementTree as xml
@@ -10,7 +10,6 @@ class BuildNN:
     def __init__(self, model: Union[str, List] = 'distiluse-base-multilingual-cased'):
         self.model = model
         self.embeddings = None
-
 
     def encode(self, text: Union[str, List]):
         """ Генерация эмбеддингов
@@ -29,7 +28,7 @@ class BuildNN:
                 for token in text:
                   embeddings.append(numpy.array(model.encode(token), dtype='double'))
             self.embeddings[self.model] = embeddings
-
+        
         elif isinstance(self.model, Iterable):
             self.embeddings = {}
             for model in self.model:
@@ -45,12 +44,46 @@ class BuildNN:
         return self
 
 
+    def encode_from_xml(self, folder: str):
+        """ Генерация эмбеддингов для xml-файлов
+        
+            folder: str - строка
+        """
+        files = os.listdir(folder)
+        self.embeddings = {}
+
+        if isinstance(self.model, str):
+            model = SentenceTransformer(self.model)
+            embeddings = []
+            for file in files:
+                path = os.path.join(folder, file)
+                parser = xml.XMLParser(encoding="utf-8")
+                tree = xml.parse(path, parser=parser)
+                text = tree.find('text').text
+                embeddings.append(numpy.array(model.encode(text), dtype='double'))
+
+            self.embeddings[self.model] = embeddings
+
+        elif isinstance(self.model, Iterable):
+            for model in self.model:
+                sent_trans = SentenceTransformer(model)
+                embeddings = []
+                for file in files:
+                    path = os.path.join(folder, file)
+                    parser = xml.XMLParser(encoding="utf-8")
+                    tree = xml.parse(path, parser=parser)
+                    text = tree.find('text').text
+                    embeddings.append(numpy.array(sent_trans.encode(text), dtype='double'))
+
+                self.embeddings[model] = embeddings
+
+
     def get_embeddings(self, model: str = None) -> Union[dict, numpy.ndarray]:
         """ Получение эмбеддингов
         
             model: str - название модели
         """
-
+        
         if len(self.embeddings) == 1:
             return self.embeddings[self.model]
 
@@ -59,7 +92,6 @@ class BuildNN:
 
         return self.embeddings
     
-
     def save_embeddings_xml(self, model: str = None, filename: str = 'embeddings.xml'):
         """ Сохранение эмбеддингов в формате XML
         
