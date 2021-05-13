@@ -13,10 +13,12 @@ class BuildNN:
         self.embeddings = None
 
     def encode(self, text: Union[str, List]):
-        """ Генерация эмбеддингов
+        """ Embedding generation
         
-            from_list:  str - строка
-                        list - список строк
+        Parameters
+        ----------
+        text : str, list
+            A list of texts or a single string instance
         """
         
         if isinstance(self.model, str):
@@ -46,9 +48,12 @@ class BuildNN:
 
 
     def encode_from_xml(self, folder: str):
-        """ Генерация эмбеддингов для xml-файлов
+        """ Embedding generation for xml files
         
-            folder: str - строка
+        Parameters
+        __________
+        folder : str
+            Folder with documents in xml format
         """
         files = os.listdir(folder)
         self.embeddings = {}
@@ -80,9 +85,12 @@ class BuildNN:
 
 
     def get_embeddings(self, model: str = None) -> Union[dict, numpy.ndarray]:
-        """ Получение эмбеддингов
+        """ Getting embedding
         
-            model: str - название модели
+        Parameters
+        __________
+        model : str
+            Model name or path
         """
         
         if len(self.embeddings) == 1:
@@ -94,12 +102,15 @@ class BuildNN:
         return self.embeddings
     
     def save_embeddings_xml(self, model: str = None, filename: str = 'embeddings.xml'):
-        """ Сохранение эмбеддингов в формате XML
+        """ Saving embeddings in xml format
         
-            model: str - название модели
-            filename: str - имя файла
+        Parameters
+        __________
+        model : str
+            Model name or path
+        filename : str
         """
-
+        
         data = xml.Element("data")
 
         if model:
