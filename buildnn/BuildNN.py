@@ -7,8 +7,9 @@ from sentence_transformers import SentenceTransformer
 
 
 class BuildNN:
-    def __init__(self, model: Union[str, List] = 'distiluse-base-multilingual-cased'):
+    def __init__(self, model: Union[str, List] = 'distiluse-base-multilingual-cased', device: str = 'cpu'):
         self.model = model
+        self.device = device
         self.embeddings = None
 
     def encode(self, text: Union[str, List]):
@@ -19,7 +20,7 @@ class BuildNN:
         """
         
         if isinstance(self.model, str):
-            model = SentenceTransformer(self.model)
+            model = SentenceTransformer(self.model, device=self.device)
             self.embeddings = {}
             embeddings = []
             if isinstance(text, str):
@@ -32,7 +33,7 @@ class BuildNN:
         elif isinstance(self.model, Iterable):
             self.embeddings = {}
             for model in self.model:
-                sent_trans = SentenceTransformer(model)
+                sent_trans = SentenceTransformer(model, device=self.device)
                 embeddings = []
                 if isinstance(text, str):
                     embeddings.append(numpy.array(sent_trans.encode(text), dtype='double'))
@@ -53,7 +54,7 @@ class BuildNN:
         self.embeddings = {}
 
         if isinstance(self.model, str):
-            model = SentenceTransformer(self.model)
+            model = SentenceTransformer(self.model, device=self.device)
             embeddings = []
             for file in files:
                 path = os.path.join(folder, file)
@@ -66,7 +67,7 @@ class BuildNN:
 
         elif isinstance(self.model, Iterable):
             for model in self.model:
-                sent_trans = SentenceTransformer(model)
+                sent_trans = SentenceTransformer(model, device=self.device)
                 embeddings = []
                 for file in files:
                     path = os.path.join(folder, file)
