@@ -1,6 +1,5 @@
 import os
 import numpy
-import pandas as pd
 import xml.etree.ElementTree as xml
 from typing import List, Mapping, Union, Iterable
 from sentence_transformers import SentenceTransformer
@@ -90,12 +89,13 @@ class BuildNN:
         Parameters
         __________
         model : str
-            Model name or path
+            Model name
         """
         
-        if len(self.embeddings) == 1:
+        if isinstance(self.model, str):
             return self.embeddings[self.model]
-
+        elif len(self.embeddings) == 1 and isinstance(self.model, List):
+            return self.embeddings[self.model[0]]
         elif len(self.embeddings) > 1 and model:
             return self.embeddings[model]
 
@@ -118,8 +118,12 @@ class BuildNN:
             embeddings = self.get_embeddings(model)
             for embedding in embeddings:
                 xml.SubElement(embeddings_tag, "vec").text = str(embedding)
-
-        elif len(self.model) > 1:
+        elif isinstance(self.model, str):
+            embeddings_tag = xml.SubElement(data, "embeddings", name=self.model)
+            embeddings = self.get_embeddings(self.model)
+            for embedding in embeddings:
+                xml.SubElement(embeddings_tag, "vec").text = str(embedding)
+        elif isinstance(self.model, List):
             for model in self.model:
                 embeddings_tag = xml.SubElement(data, "embeddings", name=model)
                 embeddings = self.get_embeddings(model)

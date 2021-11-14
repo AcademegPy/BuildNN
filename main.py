@@ -1,12 +1,17 @@
-from transformers import DistilBertTokenizer, DistilBertModel
-from typing import List, Mapping, Union, Iterable
-import torch
-import numpy
 from buildnn.BuildNN import BuildNN
 
 
 def main():
-    obj = BuildNN(['distiluse-base-multilingual-cased', 'distilbert-base-uncased'], device='cuda')
+    obj = BuildNN(
+        [ 
+           'all-mpnet-base-v2', 
+           'distiluse-base-multilingual-cased-v1',
+           'distiluse-base-multilingual-cased-v2',
+           'distiluse-base-multilingual-cased', 
+           'distilbert-base-uncased', 
+           'bert-base-multilingual-cased',  
+        ],
+                  device='cpu')
     obj.encode_from_xml("data_xml/")
     embeddings = obj.get_embeddings()
     print(embeddings)
